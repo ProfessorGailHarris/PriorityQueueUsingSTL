@@ -36,6 +36,7 @@ int main( int argc, const char* argv[] ) {
     // Code from: https://en.cppreference.com/w/cpp/container/priority_queue
     //
 
+    // default is a max queue
     std::priority_queue<int> q;
 
     for (int n : {1, 8, 5, 6, 3, 4, 0, 9, 7, 2})
@@ -43,6 +44,7 @@ int main( int argc, const char* argv[] ) {
 
     print_queue( q );
 
+    // make it be a min queue
     std::priority_queue<int, std::vector<int>, std::greater<int> > q2;
 
     for (int n : {1, 8, 5, 6, 3, 4, 0, 9, 7, 2})
@@ -51,7 +53,8 @@ int main( int argc, const char* argv[] ) {
     print_queue( q2 );
 
     // Using lambda to compare elements.
-    auto cmp = []( int left, int right ) { return (left ^ 1) < (right ^ 1); };
+    // Do the lambda as a min queue
+    auto cmp = []( int left, int right ) { return left > right ; };
     std::priority_queue<int, std::vector<int>, decltype(cmp)> q3( cmp );
 
     for (int n : {1, 8, 5, 6, 3, 4, 0, 9, 7, 2})
@@ -73,6 +76,7 @@ int main( int argc, const char* argv[] ) {
     {
         bool operator()( A_Star_Node_Priority const& lhs, A_Star_Node_Priority const& rhs )
         {
+            // make it a min queue
             return lhs.priority > rhs.priority;
         }
     };
@@ -109,6 +113,9 @@ int main( int argc, const char* argv[] ) {
 
         // pushing the object, not the pointer, onto the priority queue
         pq.push( *c );
+        printf( "new top is: " );
+        A_Star_Node_Priority d = pq.top();
+        d.print();
     }
 
     // Notice that the order of objects as they pop off the queue are
