@@ -33,11 +33,8 @@ public:
     float priority;
 
     // constructors
-    NodeAndPriority(Node* node_, float priority_)
-    {
-        node = node_;
-        priority = priority_;
-    }
+    // We'll use the "universal" constructor when needed.
+    // See: https://learn.microsoft.com/en-us/cpp/cpp/initializing-classes-and-structs-without-constructors-cpp?view=msvc-170
 
     // useful functions
     void print()
@@ -138,7 +135,7 @@ int main( int argc, const char* argv[] ) {
         // Declare and initialize a NodeAndPriority object, for storing on the queue.
         // (Not using pointers or heap for NodeAndPriority objects, thus
         // simplifying memory management.)
-        NodeAndPriority c( n, priorities[i] );
+        NodeAndPriority c{ n, priorities[i] };
 
         printf( "add " );
         c.print();
