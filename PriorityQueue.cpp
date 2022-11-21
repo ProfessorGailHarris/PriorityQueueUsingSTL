@@ -10,8 +10,7 @@
 #include <queue>
 #include <vector>
 #include <iostream>
-
-#include "A_Star_Node_Priority.h"
+#include "node.h"
 
 // function for printing priority queue when it only contains integers
 template<typename T> void print_queue( T& q ) {
@@ -21,6 +20,30 @@ template<typename T> void print_queue( T& q ) {
     }
     std::cout << '\n';
 }
+
+
+struct NodeAndPriority
+{
+public:
+
+    // member variables
+    Node* node;
+    float priority;
+
+    // constructors
+    NodeAndPriority(Node* node_, float priority_)
+    {
+        node = node_;
+        priority = priority_;
+    }
+
+    // useful functions
+    void print()
+    {
+        printf("Node: %i, priority: %.2f \n", node->label, priority);
+    }
+};
+
 
 int main( int argc, const char* argv[] ) {
     // insert code here...
@@ -74,7 +97,7 @@ int main( int argc, const char* argv[] ) {
     // (might be better to have in a separate file and included?)
     struct ComparePriority
     {
-        bool operator()( A_Star_Node_Priority const& lhs, A_Star_Node_Priority const& rhs )
+        bool operator()( NodeAndPriority const& lhs, NodeAndPriority const& rhs )
         {
             // make it a min queue
             return lhs.priority > rhs.priority;
@@ -84,7 +107,7 @@ int main( int argc, const char* argv[] ) {
     // create the priority queue using the Standard Template Library (STL)
     // I chose double ended queue, rather than vector, for the container class
     // I thought it might be better for performance, particularly for larger graphs
-    std::priority_queue<A_Star_Node_Priority, std::deque<A_Star_Node_Priority>, ComparePriority > pq;
+    std::priority_queue<NodeAndPriority, std::deque<NodeAndPriority>, ComparePriority > pq;
 
     // set up some data for my testing:
 
@@ -101,20 +124,20 @@ int main( int argc, const char* argv[] ) {
 
     // declare some pointers for creating nodes and the objects to be put in the queue
     Node* n;
-    A_Star_Node_Priority* c;
+    NodeAndPriority* c;
 
     printf( "Load up the priority queue...\n" );
     for (int i=0; i<SIZE; i++)
     {
         n = new Node( labels[i] );
-        c = new A_Star_Node_Priority( n, priorities[i] );
+        c = new NodeAndPriority( n, priorities[i] );
         printf( "add " );
         c->print();
 
         // pushing the object, not the pointer, onto the priority queue
         pq.push( *c );
         printf( "new top is: " );
-        A_Star_Node_Priority d = pq.top();
+        NodeAndPriority d = pq.top();
         d.print();
     }
 
@@ -126,7 +149,7 @@ int main( int argc, const char* argv[] ) {
     while (!pq.empty())
     {
         // get the top item and print it
-        A_Star_Node_Priority c = pq.top();
+        NodeAndPriority c = pq.top();
         c.print();
         // remove top item from the priority queue
         pq.pop();
