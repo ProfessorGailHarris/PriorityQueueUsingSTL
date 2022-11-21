@@ -22,6 +22,8 @@ template<typename T> void print_queue( T& q ) {
 }
 
 
+// This is used in Part 2 of the demo. 
+// It will be useful for the A* pathfinding algorithm.
 struct NodeAndPriority
 {
 public:
@@ -41,6 +43,16 @@ public:
     void print()
     {
         printf("Node: %i, priority: %.2f \n", node->label, priority);
+    }
+};
+
+// create struct with one operation, for use in the comparisons needed by the priority queue
+struct ComparePriority
+{
+    bool operator()(NodeAndPriority const& lhs, NodeAndPriority const& rhs)
+    {
+        // make it a min queue: lowest value of priority at top of the queue
+        return lhs.priority > rhs.priority;
     }
 };
 
@@ -93,16 +105,6 @@ int main( int argc, const char* argv[] ) {
 
     printf( "\n\nDemo Part 2\n\n" );
 
-    // create struct with one operation, for use in the comparisons needed by the priority queue
-    // (might be better to have in a separate file and included?)
-    struct ComparePriority
-    {
-        bool operator()( NodeAndPriority const& lhs, NodeAndPriority const& rhs )
-        {
-            // make it a min queue
-            return lhs.priority > rhs.priority;
-        }
-    };
 
     // create the priority queue using the Standard Template Library (STL)
     // I chose double ended queue, rather than vector, for the container class
@@ -124,18 +126,26 @@ int main( int argc, const char* argv[] ) {
 
     // declare some pointers for creating nodes and the objects to be put in the queue
     Node* n;
-    NodeAndPriority* c;
 
     printf( "Load up the priority queue...\n" );
     for (int i=0; i<SIZE; i++)
     {
-        n = new Node( labels[i] );
-        c = new NodeAndPriority( n, priorities[i] );
-        printf( "add " );
-        c->print();
+        // These Node objects ought to be deleted, but in intended application 
+        // they probably already exist and some other object would be responsible for
+        // for deleting them.
+        n = new Node( labels[i] );  
 
-        // pushing the object, not the pointer, onto the priority queue
-        pq.push( *c );
+        // Declare and initialize a NodeAndPriority object, for storing on the queue.
+        // (Not using pointers or heap for NodeAndPriority objects, thus
+        // simplifying memory management.)
+        NodeAndPriority c( n, priorities[i] );
+
+        printf( "add " );
+        c.print();
+
+        // Push NodeAndPriority object onto the priority queue
+        pq.push( c );
+
         printf( "new top is: " );
         NodeAndPriority d = pq.top();
         d.print();
@@ -146,12 +156,14 @@ int main( int argc, const char* argv[] ) {
     // Change the comparison in the ComparePriority struct if you want to reverse the order
     printf( "\n" );
     printf( "Contents of Priority Queue:\n" );
+
     while (!pq.empty())
     {
         // get the top item and print it
         NodeAndPriority c = pq.top();
         c.print();
-        // remove top item from the priority queue
+
+        // remove top item from the priority queue (because top() does not do removal)
         pq.pop();
     }
 
