@@ -41,11 +41,7 @@ public:
     {
         printf("Node: %i, priority: %.2f \n", node->label, priority);
     }
-};
 
-// create struct with one operation, for use in the comparisons needed by the priority queue
-struct ComparePriority
-{
     bool operator()(NodeAndPriority const& lhs, NodeAndPriority const& rhs)
     {
         // make it a min queue: lowest value of priority at top of the queue
@@ -106,7 +102,7 @@ int main( int argc, const char* argv[] ) {
     // create the priority queue using the Standard Template Library (STL)
     // I chose double ended queue, rather than vector, for the container class
     // I thought it might be better for performance, particularly for larger graphs
-    std::priority_queue<NodeAndPriority, std::deque<NodeAndPriority>, ComparePriority > pq;
+    std::priority_queue<NodeAndPriority, std::deque<NodeAndPriority>, NodeAndPriority > pq;
 
     // set up some data for my testing:
 
@@ -150,7 +146,7 @@ int main( int argc, const char* argv[] ) {
 
     // Notice that the order of objects as they pop off the queue are
     // lowest priority first.
-    // Change the comparison in the ComparePriority struct if you want to reverse the order
+    // Change the comparison in operator() in NodeAndPriority struct if you want to reverse the order
     printf( "\n" );
     printf( "Contents of Priority Queue:\n" );
 
